@@ -6,7 +6,6 @@
 
   The following variables are automatically generated and updated when changes are made to the Thing
 
-  float lux;
   bool sun;
 
   Variables which are marked as READ/WRITE in the Cloud Thing will also have functions
@@ -15,11 +14,11 @@
 */
 
 #include "thingProperties.h"
-#include <BH1750.h>
+#include <BH1750FVI.h>
 
-BH1750 lightMeter;
+// Create the Lightsensor instance
+BH1750FVI LightSensor(BH1750FVI::k_DevModeContLowRes);
 
-sun = false;
 
 void setup() {
   // Initialize serial and wait for port to open:
@@ -46,20 +45,18 @@ void setup() {
 
 void loop() {
   ArduinoCloud.update();
-  // Your code here 
-  
-  lux = lightMeter.readLightLevel();
-  
-  if (lux > 200)
-  {
+  // Your code here
+   if (LightSensor.GetLightIntensity() > 200)
     sun = true;
-  }
-  else 
-  {
+   else 
     sun = false;
-  }
+    
   Serial.print("Light: ");
-  Serial.print(lux);
-  Serial.println(" lx");
-  delay(1000);
+  Serial.print( LightSensor.GetLightIntensity() );
+  Serial.print(" lx");
+  Serial.print("\t sun:");
+  Serial.println(sun);
+  
+  
+  delay(3000); 
 }
